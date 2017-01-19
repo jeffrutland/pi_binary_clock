@@ -10,12 +10,15 @@ hour_color = (0, 255, 0)
 minute_color = (0, 0, 255)
 second_color = (255, 0, 0)
 hundredths_color = (127, 127, 0)
-frame_color = (25, 25, 25)
+frame_color = (200, 200, 200)
+upper_frame_corner = (0, 0)
+lower_frame_corner = (7, 7)
+highest_value = 7
 off = (0, 0, 0)
 
 hat.clear()
 hat.rotation(270)
-hat.brightness(0.4)
+hat.brightness(0.3)
 
 def display_binary(value, row, color):
 	binary_str = "{0:8b}".format(value)
@@ -24,6 +27,12 @@ def display_binary(value, row, color):
 			hat.set_pixel(x - 2, row, color[0], color[1], color[2])
 		else:
 			hat.set_pixel(x - 2, row, 0, 0, 0)	
+
+def display_frame():
+	if upper_frame_corner[0] < highest_value:
+		upper_frame_corner = (upper_frame_corner[0] + 1, upper_frame_corner[1])
+
+	hat.set_pixel(upper_frame_corner[0], upper_frame_corner[1], frame_color[0], frame_color[1], frame_color[2])
 
 while True:
     t = datetime.datetime.now()
@@ -43,6 +52,7 @@ while True:
     display_binary(tens_second, 2, second_color)
     display_binary(ones_second, 1, second_color)
     # display_binary(t.microsecond / 10000, 0, hundredths_color)
+    # display_frame()
     hat.show()
     time.sleep(1)
     # time.sleep(0.0001)
