@@ -10,6 +10,7 @@ hour_color = (0, 255, 0)
 minute_color = (0, 0, 255)
 second_color = (255, 0, 0)
 hundredths_color = (127, 127, 0)
+frame_color = (25, 25, 25)
 off = (0, 0, 0)
 
 hat.clear()
@@ -20,9 +21,9 @@ def display_binary(value, row, color):
 	binary_str = "{0:8b}".format(value)
 	for x in range(0, 8):
 		if binary_str[x] == '1':
-			hat.set_pixel(x, row, color[0], color[1], color[2])
+			hat.set_pixel(x - 2, row, color[0], color[1], color[2])
 		else:
-			hat.set_pixel(x, row, 0, 0, 0)
+			hat.set_pixel(x - 2, row, 0, 0, 0)	
 
 while True:
     t = datetime.datetime.now()
