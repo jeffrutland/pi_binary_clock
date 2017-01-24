@@ -3,28 +3,30 @@
 import unicornhat as hat
 import time, datetime
 
-year_color = (0, 255, 0)
-month_color = (0, 0, 255)
-day_color = (255, 0, 0)
-hour_color = (0, 255, 0)
-minute_color = (0, 0, 255)
-second_color = (255, 0, 0)
+hour_color = (0, 175, 125)
+minute_color = (0, 0, 175)
+second_color = (125, 0, 175)
 hundredths_color = (127, 127, 0)
-frame_color = (200, 200, 200)
-frame_index = 0 # starting index
+frame_color = (90, 90, 90)
+shift_index = 0 # starting index
 highest_value = 7
 off = (0, 0, 0)
 
 hat.clear()
-hat.rotation(270)
-hat.brightness(0.3)
+hat.rotation(180)
+hat.brightness(0.5)
 
 def display_binary(value, row, color):
     # determine the color to use... if none, use frame color
     if color is None:
             draw_color = frame_color
     else:
-            draw_color = color    
+            draw_color = color
+
+    # add a value here to animate on the time rows
+    # if shift_index == row:
+        # value = value + 128
+        # value = value + 1
 
     binary_str = "{0:8b}".format(value)
     # print value
@@ -35,21 +37,13 @@ def display_binary(value, row, color):
         else:
             hat.set_pixel(x, row, 0, 0, 0)  
 
-def display_frame():
-    # side...
-    hat.set_pixel(0, frame_index, frame_color[0], frame_color[1], frame_color[2])
-    # hat.set_pixel(frame_index, 0, frame_color[0], frame_color[1], frame_color[2])
-    # hat.set_pixel(7, frame_index, frame_color[0], frame_color[1], frame_color[2])
-    # hat.set_pixel(frame_index, 7, frame_color[0], frame_color[1], frame_color[2])
-
-
 def advance_index():
-        global frame_index
-        # print frame_index
-        if frame_index < highest_value:
-                frame_index = frame_index + 1
+        global shift_index
+        # print shift_index
+        if shift_index < highest_value:
+                shift_index = shift_index + 1
         else:
-                frame_index = 0
+                shift_index = 0
 
 while True:
     t = datetime.datetime.now()
@@ -64,20 +58,32 @@ while True:
     # split values into seperate digits for second
     tens_second = (t.second // 10)
     ones_second = (t.second % 10)
-    # bit-shift everything to the left 2 spaces to center the display
-    display_binary(128 >> frame_index, 7, None)
-    display_binary(tens_hour << 2, 6, hour_color)
-    display_binary(ones_hour << 2, 5, hour_color)
-    display_binary(tens_minute << 2, 4, minute_color)
-    display_binary(ones_minute << 2, 3, minute_color)
-    display_binary((tens_second << 2), 2, second_color)
-    display_binary((ones_second << 2), 1, second_color)
-    display_binary(1 << frame_index, 0, None)
 
-    # print 128 >> frame_index
-    # print frame_index >> 1
+    # display on the two outer vertical rows
+    # display_binary((128 >> shift_index), 7, None)
+    # display_binary(1 << shift_index, 0, None)
+    
+    # bit-shift everything to the left 2 spaces to center the display
+    # also, figure out if a value is needed to be added to each here
+    # to animate the horizontal rows
+    
+    # display_binary((tens_hour << 2), 6, hour_color)
+    # display_binary((ones_hour << 2), 5, hour_color)
+    # display_binary((tens_minute << 2), 4, minute_color)
+    # display_binary((ones_minute << 2), 3, minute_color)
+    # display_binary((tens_second << 2), 2, second_color)
+    # display_binary((ones_second << 2), 1, second_color)
+
+    display_binary(tens_hour, 6, hour_color)
+    display_binary(ones_hour, 5, hour_color)
+    display_binary(tens_minute, 4, minute_color)
+    display_binary(ones_minute, 3, minute_color)
+    display_binary(tens_second, 2, second_color)
+    display_binary(ones_second, 1, second_color)
+
+    # print 128 >> shift_index
+    # print shift_index >> 1
 
     advance_index()
     hat.show()
     time.sleep(0.1)
-    # time.sleep(0.0001)
