@@ -20,12 +20,18 @@ hat.rotation(270)
 hat.brightness(0.3)
 
 def display_binary(value, row, color):
+    # determine the color to use... if none, use frame color
+    if color is None:
+            draw_color = frame_color
+    else:
+            draw_color = color    
+
     binary_str = "{0:8b}".format(value)
     # print value
-    print binary_str
+    # print binary_str
     for x in range(0, 8):
         if binary_str[x] == '1':
-            hat.set_pixel(x, row, color[0], color[1], color[2])
+            hat.set_pixel(x, row, draw_color[0], draw_color[1], draw_color[2])
         else:
             hat.set_pixel(x, row, 0, 0, 0)  
 
@@ -59,13 +65,19 @@ while True:
     tens_second = (t.second // 10)
     ones_second = (t.second % 10)
     # bit-shift everything to the left 2 spaces to center the display
+    display_binary(128 >> frame_index, 7, None)
     display_binary(tens_hour << 2, 6, hour_color)
     display_binary(ones_hour << 2, 5, hour_color)
     display_binary(tens_minute << 2, 4, minute_color)
     display_binary(ones_minute << 2, 3, minute_color)
-    display_binary(tens_second << 2, 2, second_color)
-    display_binary(ones_second << 2, 1, second_color)
+    display_binary((tens_second << 2), 2, second_color)
+    display_binary((ones_second << 2), 1, second_color)
+    display_binary(1 << frame_index, 0, None)
+
+    # print 128 >> frame_index
+    # print frame_index >> 1
+
     advance_index()
     hat.show()
-    time.sleep(1)
+    time.sleep(0.1)
     # time.sleep(0.0001)
